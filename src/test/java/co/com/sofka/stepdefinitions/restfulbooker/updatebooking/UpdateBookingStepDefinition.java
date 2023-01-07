@@ -16,6 +16,7 @@ import net.serenitybdd.rest.SerenityRest;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 import org.apache.http.HttpStatus;
+import org.assertj.core.api.Assertions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class UpdateBookingStepDefinition extends SetUp {
                     getToken()
             );
             response = SerenityRest.lastResponse().getBody().asString();
-            token = String.valueOf(new ObjectMapper().readValue(response, ObjectNode.class).get("token"));
+            token = new ObjectMapper().readValue(response, ObjectNode.class).get("token").asText();
             headerWithToken.put("Cookie", "token=" + token);
         } catch (Exception e) {
             LOGGER.warn(e.getMessage(), e);
@@ -115,6 +116,7 @@ public class UpdateBookingStepDefinition extends SetUp {
                     seeThat(assertText().is(objectResponse.getFirstname(), currentObject.firstname), equalTo(true))
             );
         } catch (Exception e) {
+            Assertions.fail(e.getMessage(), e);
             LOGGER.warn(e.getMessage(), e);
         }
 
